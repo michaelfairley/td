@@ -1,6 +1,10 @@
-multiple creeps
-losing
-winning
-building towers
-different towers
 show health
+upgrade towers
+different towers
+different creeps
+levels
+decent stopping/starting
+
+tease out graphics from state/logic
+point/vector classes?
+state router

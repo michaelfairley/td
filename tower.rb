@@ -1,14 +1,24 @@
 Hasu.load "projectile.rb"
+Hasu.load "tower_graphics.rb"
 
 class Tower
+  GRAPHICS = TowerGraphics
+
   SIZE = 32
   RANGE = 100
   FIRE_RATE = 20
+
+  def self.cost
+    3
+  end
+
+  attr_reader :x, :y
 
   def initialize(x, y)
     @x = x
     @y = y
     @cooldown = 0
+    @graphics = TowerGraphics.new(@x*SIZE, @y*SIZE)
   end
 
   def rect
@@ -28,28 +38,20 @@ class Tower
     @y * SIZE + SIZE/2
   end
 
-  def color
-    Gosu::Color::BLUE
-  end
-
   def draw(window)
-    rect.draw(window, color)
+    @graphics.draw(window)
 
-    if window.mouse_objects.include?(self)
-      (0..2*Math::PI).step(0.01).map do |i|
-        [Math.sin(i) * RANGE + xm, Math.cos(i) * RANGE + ym]
-      end.each_cons(2) do |(x1,y1),(x2,y2)|
-        window.draw_line(x1, y1, Gosu::Color::GRAY, x2, y2, Gosu::Color::GRAY)
-      end
+    if rect.contains?(window.mouse_x, window.mouse_y)
+      @graphics.draw_ring(window)
     end
   end
 
   def update(window)
     @cooldown -= 1  unless @cooldown == 0
 
-    target = window.creeps.select do |creep|
+    target = window.creeps.find do |creep|
       Math.sqrt((creep.x - xm)**2 + (creep.y - ym)**2) < RANGE
-    end.sample
+    end
 
     if target && @cooldown == 0
       @cooldown = FIRE_RATE

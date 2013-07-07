@@ -11,6 +11,10 @@ class Creep
     @health = 4
   end
 
+  def value
+    1
+  end
+
   def rect
     Rect.new(
              x1: @x - SIZE/2,
@@ -29,7 +33,7 @@ class Creep
   end
 
   def update(window)
-    if @x == @next_path.xm && @y == @next_path.ym
+    if @next_path.rect.contains?(@x, @y)
       @next_path = window.paths[window.paths.find_index(@next_path)+1]
       return  if @next_path.nil?
     end
@@ -37,18 +41,16 @@ class Creep
     dx = @next_path.xm - @x
     dy = @next_path.ym - @y
 
-    if dx > 0
-      @x += [SPEED, dx].min
+    dh = Math.sqrt(dx**2 + dy**2)
+
+    if dh > SPEED
+      scale = SPEED/dh
+      dy *= scale
+      dx *= scale
     end
-    if dx < 0
-      @x -= [SPEED, dx.abs].min
-    end
-    if dy > 0
-      @y += [SPEED, dy].min
-    end
-    if dy < 0
-      @y -= [SPEED, dy.abs].min
-    end
+
+    @x += dx
+    @y += dy
   end
 
   def at_end?
