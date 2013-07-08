@@ -60,7 +60,7 @@ class Creep
   end
 
   def update(window)
-    if @next_path.rect.contains?(@x, @y)
+    if (@next_path.xm-@x).abs <= 1 && (@next_path.ym-@y).abs <= 1
       @next_path = window.paths[window.paths.find_index(@next_path)+1]
       return  if @next_path.nil?
     end
