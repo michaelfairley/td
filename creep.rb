@@ -8,6 +8,7 @@ class Creep
     @x = first_path.xm
     @y = first_path.ym
     @next_path = first_path
+    @initial_health = 4
     @health = 4
   end
 
@@ -25,11 +26,37 @@ class Creep
   end
 
   def color
+    Gosu::Color::BLACK
+  end
+
+  def health_color
     Gosu::Color::RED
+  end
+
+  def base_health_rects
+    health_sqrt = Math.sqrt(@initial_health).to_i
+    small_size = SIZE / health_sqrt
+    big_rect = rect
+
+    health_sqrt.times.flat_map do |x|
+      health_sqrt.times.map do |y|
+        Rect.new(
+                 x1: big_rect.x1 + x * small_size,
+                 x2: big_rect.x1 + (x+1) * small_size,
+                 y1: big_rect.y1 + y * small_size,
+                 y2: big_rect.y1 + (y+1) * small_size,
+                 )
+      end
+    end
+  end
+
+  def health_rects
+    base_health_rects.first(@health)
   end
 
   def draw(window)
     rect.draw(window, color)
+    health_rects.each{|hr| hr.draw(window, health_color) }
   end
 
   def update(window)
