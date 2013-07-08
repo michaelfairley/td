@@ -7,6 +7,7 @@ class TowerGraphics
     @y1 = y
     @preview = options.fetch(:preview, false)
     @invalid = options.fetch(:invalid, false)
+    @level = options.fetch(:level, 1)
   end
 
   def rect
@@ -32,7 +33,12 @@ class TowerGraphics
     elsif @preview
       Gosu::Color.argb(0xaa0000ff)
     else
-      Gosu::Color::BLUE
+      case @level
+      when 1; Gosu::Color::BLUE
+      when 2; Gosu::Color::CYAN
+      when 3; Gosu::Color::WHITE
+      else; raise
+      end
     end
   end
 

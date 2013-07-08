@@ -6,7 +6,6 @@ class Tower
 
   SIZE = 32
   RANGE = 100
-  FIRE_RATE = 20
 
   def self.cost
     3
@@ -18,7 +17,11 @@ class Tower
     @x = x
     @y = y
     @cooldown = 0
-    @graphics = TowerGraphics.new(@x*SIZE, @y*SIZE)
+    @level = 1
+  end
+
+  def graphics
+    TowerGraphics.new(@x*SIZE, @y*SIZE, level: @level)
   end
 
   def rect
@@ -39,10 +42,31 @@ class Tower
   end
 
   def draw(window)
-    @graphics.draw(window)
+    graphics.draw(window)
 
     if rect.contains?(window.mouse_x, window.mouse_y)
-      @graphics.draw_ring(window)
+      graphics.draw_ring(window)
+    end
+  end
+
+  def upgrade_cost
+    2
+  end
+
+  def upgradeable?
+    @level < 3
+  end
+
+  def upgrade!
+    @level += 1
+  end
+
+  def fire_rate
+    case @level
+    when 1; 20
+    when 2; 15
+    when 3; 10
+    else; raise
     end
   end
 
@@ -54,8 +78,8 @@ class Tower
     end
 
     if target && @cooldown == 0
-      @cooldown = FIRE_RATE
-      window.projectiles << Projectile.new(xm, ym, target)
+      @cooldown = fire_rate
+      window.projectiles << Projectile.new(xm, ym, target, graphics.color)
     end
   end
 end

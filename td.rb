@@ -126,6 +126,16 @@ class TD < Gosu::Window
         if @buy_box.rect.contains?(mouse_x, mouse_y)
           @buy_box.click(mouse_x, mouse_y)
         end
+        @towers.select do |tower|
+          tower.rect.contains?(mouse_x, mouse_y)
+        end.select do |tower|
+          @buy_box.money >= tower.upgrade_cost
+        end.select do |tower|
+          tower.upgradeable?
+        end.each do |tower|
+          @buy_box.money -= tower.upgrade_cost
+          tower.upgrade!
+        end
       end
     when Gosu::MsRight
       @buy_box.placing = nil

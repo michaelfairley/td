@@ -3,10 +3,11 @@ class Projectile
   SPEED = 3
   DAMAGE = 1
 
-  def initialize(x, y, target)
+  def initialize(x, y, target, color)
     @x = x
     @y = y
     @target = target
+    @color = color
   end
 
   def update(window)
@@ -48,7 +49,7 @@ class Projectile
   end
 
   def color
-    Gosu::Color::BLUE
+    @color
   end
 
   def draw(window)
