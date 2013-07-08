@@ -4,6 +4,7 @@ different creeps
 levels
 decent stopping/starting
 buy_box == tiles
+manhattan range
 
 tease out graphics from state/logic
 point/vector classes?
