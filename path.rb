@@ -34,7 +34,7 @@ class Path
   end
 
   def color
-    Gosu::Color::YELLOW
+    Gosu::Color::WHITE
   end
 
   def xm

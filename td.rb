@@ -33,7 +33,7 @@ class TD < Gosu::Window
     @paths = Path.build(16, 14, "uuuuuuuuuuulllllllllddddrrrrrddddllllllllluuuuuuuuuuu")
 
     @creeps = []
-    @creep_queue = [:creep] * 20
+    @creep_queue = [:a] * 10 + [:b] * 20 + [:c] * 30 + [:d]
     @creep_timer = 0
 
     @towers = []
@@ -48,7 +48,7 @@ class TD < Gosu::Window
   def draw
     case state
     when :playing
-      Rect.new(x1:0, y1:0, x2:WIDTH, y2:HEIGHT).draw(self, Gosu::Color::GREEN)
+      Rect.new(x1:0, y1:0, x2:WIDTH, y2:HEIGHT).draw(self, Gosu::Color::BLACK)
       @paths.each{|p| p.draw(self) }
       @creeps.each{|c| c.draw(self) }
       @towers.each{|t| t.draw(self) }
@@ -65,8 +65,8 @@ class TD < Gosu::Window
         graphics.draw_ring(self)
       end
 
-      @font.draw(@lives.to_s, 10, 10, 0, 1, 1, Gosu::Color::BLACK)
-      @font.draw(@buy_box.money.to_s, 10, 440, 0, 1, 1, Gosu::Color::BLACK)
+      @font.draw(@lives.to_s, 10, 10, 0, 1, 1, Gosu::Color::WHITE)
+      @font.draw(@buy_box.money.to_s, 10, 440, 0, 1, 1, Gosu::Color::WHITE)
 
       @buy_box.draw(self)
     when :lost
@@ -98,8 +98,7 @@ class TD < Gosu::Window
       @creep_timer -= 1
       if @creep_timer <= 0 && !@creep_queue.empty?
         @creep_timer = 30
-        @creeps << Creep.new(@paths.first)
-        @creep_queue.pop
+        @creeps << Creep.new(@creep_queue.shift, @paths.first)
       end
 
       end_creeps, @creeps = @creeps.partition(&:at_end?)

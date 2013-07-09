@@ -5,10 +5,10 @@ class Tower
   GRAPHICS = TowerGraphics
 
   SIZE = 32
-  RANGE = 100
+  RANGE = 128-16
 
   def self.cost
-    3
+    5
   end
 
   attr_reader :x, :y
@@ -74,7 +74,7 @@ class Tower
     @cooldown -= 1  unless @cooldown == 0
 
     target = window.creeps.find do |creep|
-      Math.sqrt((creep.x - xm)**2 + (creep.y - ym)**2) < RANGE
+      (creep.x - xm).abs < RANGE && (creep.y - ym).abs < RANGE
     end
 
     if target && @cooldown == 0

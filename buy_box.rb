@@ -21,7 +21,7 @@ class BuyBox
     @x1 = x
     @y1 = y
     @placing = nil
-    @money = 3
+    @money = 5
   end
 
   def rect

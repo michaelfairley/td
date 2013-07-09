@@ -4,16 +4,39 @@ class Creep
 
   attr_reader :x, :y
 
-  def initialize(first_path)
+  TYPE_HEALTH = {
+    :a => 1,
+    :b => 4,
+    :c => 16,
+    :d => 64,
+  }
+
+  TYPE_COLOR = {
+    :a => Gosu::Color.argb(0xffffd700),
+    :b => Gosu::Color.argb(0xffffa500),
+    :c => Gosu::Color.argb(0xffff4500),
+    :d => Gosu::Color::RED
+  }
+
+  TYPE_VALUE = {
+    :a => 1,
+    :b => 2,
+    :c => 4,
+    :d => 8,
+  }
+
+  def initialize(type, first_path)
     @x = first_path.xm
     @y = first_path.ym
     @next_path = first_path
-    @initial_health = 4
-    @health = 4
+
+    @type = type
+
+    @health = TYPE_HEALTH.fetch(@type)
   end
 
   def value
-    1
+    TYPE_VALUE.fetch(@type)
   end
 
   def rect
@@ -30,11 +53,11 @@ class Creep
   end
 
   def health_color
-    Gosu::Color::RED
+    TYPE_COLOR.fetch(@type)
   end
 
   def base_health_rects
-    health_sqrt = Math.sqrt(@initial_health).to_i
+    health_sqrt = Math.sqrt(TYPE_HEALTH.fetch(@type)).to_i
     small_size = SIZE / health_sqrt
     big_rect = rect
 

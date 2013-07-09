@@ -36,7 +36,7 @@ class TowerGraphics
       case @level
       when 1; Gosu::Color::BLUE
       when 2; Gosu::Color::CYAN
-      when 3; Gosu::Color::WHITE
+      when 3; Gosu::Color.argb(0xffa0ffff)
       else; raise
       end
     end
@@ -47,9 +47,13 @@ class TowerGraphics
   end
 
   def draw_ring(window)
-    (0..2*Math::PI).step(0.01).map do |i|
-      [Math.sin(i) * Tower::RANGE + xm, Math.cos(i) * Tower::RANGE + ym]
-    end.each_cons(2) do |(x1,y1),(x2,y2)|
+    [
+     [xm - Tower::RANGE, ym - Tower::RANGE],
+     [xm + Tower::RANGE, ym - Tower::RANGE],
+     [xm + Tower::RANGE, ym + Tower::RANGE],
+     [xm - Tower::RANGE, ym + Tower::RANGE],
+     [xm - Tower::RANGE, ym - Tower::RANGE],
+    ].each_cons(2) do |(x1,y1),(x2,y2)|
       window.draw_line(x1, y1, Gosu::Color::GRAY, x2, y2, Gosu::Color::GRAY)
     end
   end
