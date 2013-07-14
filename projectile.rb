@@ -12,8 +12,14 @@ class Projectile
 
   def update(window)
     if !window.creeps.include?(@target)
-      @dead = true
-      return
+      if window.creeps.empty?
+        @dead = true
+        return
+      else
+        @target = window.creeps.min do |creep|
+          (creep.x - @x).abs + (creep.y - @y).abs
+        end
+      end
     end
 
 
