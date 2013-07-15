@@ -1,8 +1,5 @@
-different towers
 levels
-decent stopping/starting
-buy_box == tiles
 
-tease out graphics from state/logic
+tease out graphics from state/logic?
 point/vector classes?
 state router

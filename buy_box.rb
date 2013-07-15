@@ -1,8 +1,7 @@
-Hasu.load "tower_graphics.rb"
-
 class BuyBox
   THINGS = [
-    Tower,
+    ProjectileTower,
+    BoomTower,
   ]
 
   PADDING = 16
@@ -40,13 +39,13 @@ class BuyBox
   def click(x, y)
     clicked = graphics.find{|g| g.rect.contains?(x, y) }
     if clicked && @placing.nil?
-      @placing = clicked.class::OWNER
+      @placing = clicked.class
     end
   end
 
   def graphics
     THINGS.each_with_index.map do |thing, i|
-      thing::GRAPHICS.new(@x1 + i*(thing::SIZE + PADDING) + PADDING, @y1 + PADDING)
+      thing.new(3.5 + i*1.5, 13.5)
     end
   end
 

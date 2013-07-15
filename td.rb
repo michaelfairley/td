@@ -4,7 +4,8 @@ require 'hasu'
 Hasu.load "rect.rb"
 Hasu.load "path.rb"
 Hasu.load "creep.rb"
-Hasu.load "tower.rb"
+Hasu.load "projectile_tower.rb"
+Hasu.load "boom_tower.rb"
 Hasu.load "buy_box.rb"
 
 class TD < Gosu::Window
@@ -42,7 +43,7 @@ class TD < Gosu::Window
 
     @state = :playing
 
-    @buy_box = BuyBox.new(100, 400)
+    @buy_box = BuyBox.new(96, 416)
   end
 
   def draw
@@ -60,9 +61,8 @@ class TD < Gosu::Window
 
         invalid = @towers.any?{|t| t.x == x && t.y == y } || @paths.any?{|t| t.x == x && t.y == y }
 
-        graphics = TowerGraphics.new(x * Tower::SIZE, y * Tower::SIZE, invalid: invalid)
-        graphics.draw(self)
-        graphics.draw_ring(self)
+        tower = @buy_box.placing.new(x, y, invalid: invalid, preview: true)
+        tower.draw(self)
       end
 
       @font.draw(@lives.to_s, 10, 10, 0, 1, 1, Gosu::Color::WHITE)
@@ -117,8 +117,8 @@ class TD < Gosu::Window
         x = (mouse_x/Tower::SIZE).floor
         y = (mouse_y/Tower::SIZE).floor
         unless @towers.any?{|t| t.x == x && t.y == y } || @paths.any?{|t| t.x == x && t.y == y }
-          @towers << Tower.new(x, y)
-          @buy_box.money -= Tower.cost
+          @towers << @buy_box.placing.new(x, y)
+          @buy_box.money -= @buy_box.placing.cost
           @buy_box.placing = nil
         end
       else
@@ -139,7 +139,9 @@ class TD < Gosu::Window
     when Gosu::MsRight
       @buy_box.placing = nil
     when Gosu::Kb1
-      @buy_box.placing = BuyBox::THINGS.first
+      @buy_box.placing = BuyBox::THINGS[0]
+    when Gosu::Kb2
+      @buy_box.placing = BuyBox::THINGS[1]
     end
   end
 end

@@ -1,27 +1,16 @@
 Hasu.load "projectile.rb"
-Hasu.load "tower_graphics.rb"
-
 class Tower
-  GRAPHICS = TowerGraphics
-
   SIZE = 32
-  RANGE = 128-16
-
-  def self.cost
-    5
-  end
 
   attr_reader :x, :y
 
-  def initialize(x, y)
+  def initialize(x, y, options={})
     @x = x
     @y = y
     @cooldown = 0
     @level = 1
-  end
-
-  def graphics
-    TowerGraphics.new(@x*SIZE, @y*SIZE, level: @level)
+    @invalid = options.fetch(:invalid, false)
+    @preview = options.fetch(:preview, false)
   end
 
   def rect
@@ -42,44 +31,30 @@ class Tower
   end
 
   def draw(window)
-    graphics.draw(window)
+    draw_square(window)
 
     if rect.contains?(window.mouse_x, window.mouse_y)
-      graphics.draw_ring(window)
+      draw_ring(window)
     end
   end
 
-  def upgrade_cost
-    2
+  def draw_square(window)
+    rect.draw(window, color)
   end
 
-  def upgradeable?
-    @level < 3
+  def draw_ring(window)
+    [
+     [xm - range, ym - range],
+     [xm + range, ym - range],
+     [xm + range, ym + range],
+     [xm - range, ym + range],
+     [xm - range, ym - range],
+    ].each_cons(2) do |(x1,y1),(x2,y2)|
+      window.draw_line(x1, y1, Gosu::Color::GRAY, x2, y2, Gosu::Color::GRAY)
+    end
   end
 
   def upgrade!
     @level += 1
-  end
-
-  def fire_rate
-    case @level
-    when 1; 20
-    when 2; 15
-    when 3; 10
-    else; raise
-    end
-  end
-
-  def update(window)
-    @cooldown -= 1  unless @cooldown == 0
-
-    target = window.creeps.find do |creep|
-      (creep.x - xm).abs < RANGE && (creep.y - ym).abs < RANGE
-    end
-
-    if target && @cooldown == 0
-      @cooldown = fire_rate
-      window.projectiles << Projectile.new(xm, ym, target, graphics.color)
-    end
   end
 end
